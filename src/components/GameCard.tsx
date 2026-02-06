@@ -1,7 +1,9 @@
+import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { ExternalLink, Gamepad2, Pencil, Trash2 } from "lucide-react";
 
 interface GameCardProps {
+  id: number;
   title: string;
   description: string;
   image: string;
@@ -11,7 +13,13 @@ interface GameCardProps {
   onDelete?: () => void;
 }
 
-const GameCard = ({ title, description, image, category, link, onEdit, onDelete }: GameCardProps) => {
+const GameCard = ({ id, title, description, image, category, link, onEdit, onDelete }: GameCardProps) => {
+  const navigate = useNavigate();
+
+  const handleCardClick = () => {
+    navigate(`/game/${id}`);
+  };
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -19,6 +27,7 @@ const GameCard = ({ title, description, image, category, link, onEdit, onDelete 
       viewport={{ once: true }}
       transition={{ duration: 0.5 }}
       whileHover={{ y: -8 }}
+      onClick={handleCardClick}
       className="group relative overflow-hidden rounded-lg glass glass-hover cursor-pointer"
     >
       {/* Image Container */}
