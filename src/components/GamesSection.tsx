@@ -4,70 +4,22 @@ import { Plus } from "lucide-react";
 import GameCard from "./GameCard";
 import GameUploadForm from "./GameUploadForm";
 import { Button } from "@/components/ui/button";
-import game1 from "@/assets/game-1.jpg";
-import game2 from "@/assets/game-2.jpg";
-import game3 from "@/assets/game-3.jpg";
+import { useGames, Game } from "@/context/GamesContext";
 
 const categories = ["All", "Action", "RPG", "Platformer", "Puzzle"];
 
-interface Game {
-  id: number;
-  title: string;
-  description: string;
-  image: string;
-  category: string;
-  link?: string;
-}
-
-const initialGames: Game[] = [
-  {
-    id: 1,
-    title: "Stellar Warfare",
-    description: "An epic space battle game with intense multiplayer combat and stunning visuals. Command your fleet across the galaxy.",
-    image: game1,
-    category: "Action",
-    link: "#",
-  },
-  {
-    id: 2,
-    title: "Enchanted Woods",
-    description: "A mystical fantasy RPG set in a magical forest. Discover secrets, battle creatures, and uncover ancient mysteries.",
-    image: game2,
-    category: "RPG",
-    link: "#",
-  },
-  {
-    id: 3,
-    title: "Pixel Runner",
-    description: "A retro-style platformer with challenging levels, collectibles, and nostalgic 8-bit graphics.",
-    image: game3,
-    category: "Platformer",
-    link: "#",
-  },
-];
-
 const GamesSection = () => {
   const [activeCategory, setActiveCategory] = useState("All");
-  const [games, setGames] = useState<Game[]>(initialGames);
+  const { games, addGame, updateGame, deleteGame } = useGames();
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [editingGame, setEditingGame] = useState<Game | null>(null);
 
   const handleAddGame = (newGame: Omit<Game, "id">) => {
     if (editingGame) {
-      // Update existing game
-      setGames((prev) =>
-        prev.map((g) =>
-          g.id === editingGame.id ? { ...newGame, id: editingGame.id } : g
-        )
-      );
+      updateGame(editingGame.id, newGame);
       setEditingGame(null);
     } else {
-      // Add new game
-      const game: Game = {
-        ...newGame,
-        id: Date.now(),
-      };
-      setGames((prev) => [game, ...prev]);
+      addGame(newGame);
     }
   };
 
@@ -77,7 +29,7 @@ const GamesSection = () => {
   };
 
   const handleDeleteGame = (id: number) => {
-    setGames((prev) => prev.filter((game) => game.id !== id));
+    deleteGame(id);
   };
 
   const handleCloseForm = () => {
@@ -146,6 +98,7 @@ const GamesSection = () => {
           {filteredGames.map((game) => (
             <GameCard
               key={game.id}
+              id={game.id}
               title={game.title}
               description={game.description}
               image={game.image}
