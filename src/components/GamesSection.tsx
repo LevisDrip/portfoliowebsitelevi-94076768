@@ -1,13 +1,25 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
+import { Plus } from "lucide-react";
 import GameCard from "./GameCard";
+import GameUploadForm from "./GameUploadForm";
+import { Button } from "@/components/ui/button";
 import game1 from "@/assets/game-1.jpg";
 import game2 from "@/assets/game-2.jpg";
 import game3 from "@/assets/game-3.jpg";
 
 const categories = ["All", "Action", "RPG", "Platformer", "Puzzle"];
 
-const sampleGames = [
+interface Game {
+  id: number;
+  title: string;
+  description: string;
+  image: string;
+  category: string;
+  link?: string;
+}
+
+const initialGames: Game[] = [
   {
     id: 1,
     title: "Stellar Warfare",
@@ -36,11 +48,21 @@ const sampleGames = [
 
 const GamesSection = () => {
   const [activeCategory, setActiveCategory] = useState("All");
+  const [games, setGames] = useState<Game[]>(initialGames);
+  const [isFormOpen, setIsFormOpen] = useState(false);
+
+  const handleAddGame = (newGame: Omit<Game, "id">) => {
+    const game: Game = {
+      ...newGame,
+      id: Date.now(),
+    };
+    setGames((prev) => [game, ...prev]);
+  };
 
   const filteredGames =
     activeCategory === "All"
-      ? sampleGames
-      : sampleGames.filter((game) => game.category === activeCategory);
+      ? games
+      : games.filter((game) => game.category === activeCategory);
 
   return (
     <section id="games" className="py-24 relative">
@@ -64,12 +86,12 @@ const GamesSection = () => {
           </p>
         </motion.div>
 
-        {/* Category Filter */}
+        {/* Category Filter + Add Button */}
         <motion.div
           initial={{ opacity: 0, y: 10 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="flex flex-wrap justify-center gap-3 mb-12"
+          className="flex flex-wrap justify-center items-center gap-3 mb-12"
         >
           {categories.map((category) => (
             <button
@@ -84,6 +106,13 @@ const GamesSection = () => {
               {category}
             </button>
           ))}
+          <Button
+            onClick={() => setIsFormOpen(true)}
+            className="px-5 py-2 rounded-full bg-accent text-accent-foreground hover:bg-accent/80 transition-all duration-300"
+          >
+            <Plus className="w-4 h-4 mr-1" />
+            Add Game
+          </Button>
         </motion.div>
 
         {/* Games Grid */}
@@ -113,6 +142,13 @@ const GamesSection = () => {
           </motion.div>
         )}
       </div>
+
+      {/* Upload Form Modal */}
+      <GameUploadForm
+        isOpen={isFormOpen}
+        onClose={() => setIsFormOpen(false)}
+        onSubmit={handleAddGame}
+      />
     </section>
   );
 };
