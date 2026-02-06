@@ -1,9 +1,9 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { X, Upload, ImagePlus } from "lucide-react";
+import { X, Upload, ImagePlus, Save } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -34,21 +34,27 @@ const formSchema = z.object({
 
 type FormValues = z.infer<typeof formSchema>;
 
+interface Game {
+  id: number;
+  title: string;
+  description: string;
+  image: string;
+  category: string;
+  link?: string;
+}
+
 interface GameUploadFormProps {
   isOpen: boolean;
   onClose: () => void;
-  onSubmit: (game: {
-    title: string;
-    description: string;
-    image: string;
-    category: string;
-    link?: string;
-  }) => void;
+  onSubmit: (game: Omit<Game, "id">) => void;
+  editingGame?: Game | null;
 }
 
-const GameUploadForm = ({ isOpen, onClose, onSubmit }: GameUploadFormProps) => {
+const GameUploadForm = ({ isOpen, onClose, onSubmit, editingGame }: GameUploadFormProps) => {
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [imageError, setImageError] = useState<string | null>(null);
+
+  const isEditing = !!editingGame;
 
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
@@ -59,6 +65,27 @@ const GameUploadForm = ({ isOpen, onClose, onSubmit }: GameUploadFormProps) => {
       link: "",
     },
   });
+
+  // Populate form when editing
+  useEffect(() => {
+    if (editingGame) {
+      form.reset({
+        title: editingGame.title,
+        description: editingGame.description,
+        category: editingGame.category,
+        link: editingGame.link || "",
+      });
+      setImagePreview(editingGame.image);
+    } else {
+      form.reset({
+        title: "",
+        description: "",
+        category: "",
+        link: "",
+      });
+      setImagePreview(null);
+    }
+  }, [editingGame, form]);
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -134,7 +161,7 @@ const GameUploadForm = ({ isOpen, onClose, onSubmit }: GameUploadFormProps) => {
               {/* Header */}
               <div className="flex items-center justify-between mb-6">
                 <h2 className="font-display text-2xl font-bold text-gradient">
-                  Add New Game
+                  {isEditing ? "Edit Game" : "Add New Game"}
                 </h2>
                 <button
                   onClick={handleClose}
@@ -234,7 +261,7 @@ const GameUploadForm = ({ isOpen, onClose, onSubmit }: GameUploadFormProps) => {
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel>Category *</FormLabel>
-                        <Select onValueChange={field.onChange} defaultValue={field.value}>
+                        <Select onValueChange={field.onChange} value={field.value}>
                           <FormControl>
                             <SelectTrigger className="bg-muted/50 border-muted-foreground/20 focus:border-primary">
                               <SelectValue placeholder="Select a category" />
@@ -277,8 +304,17 @@ const GameUploadForm = ({ isOpen, onClose, onSubmit }: GameUploadFormProps) => {
                     type="submit" 
                     className="w-full bg-primary hover:bg-primary/90 text-primary-foreground font-semibold glow-primary"
                   >
-                    <Upload className="w-4 h-4 mr-2" />
-                    Add Game
+                    {isEditing ? (
+                      <>
+                        <Save className="w-4 h-4 mr-2" />
+                        Save Changes
+                      </>
+                    ) : (
+                      <>
+                        <Upload className="w-4 h-4 mr-2" />
+                        Add Game
+                      </>
+                    )}
                   </Button>
                 </form>
               </Form>

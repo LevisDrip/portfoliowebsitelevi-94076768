@@ -50,13 +50,39 @@ const GamesSection = () => {
   const [activeCategory, setActiveCategory] = useState("All");
   const [games, setGames] = useState<Game[]>(initialGames);
   const [isFormOpen, setIsFormOpen] = useState(false);
+  const [editingGame, setEditingGame] = useState<Game | null>(null);
 
   const handleAddGame = (newGame: Omit<Game, "id">) => {
-    const game: Game = {
-      ...newGame,
-      id: Date.now(),
-    };
-    setGames((prev) => [game, ...prev]);
+    if (editingGame) {
+      // Update existing game
+      setGames((prev) =>
+        prev.map((g) =>
+          g.id === editingGame.id ? { ...newGame, id: editingGame.id } : g
+        )
+      );
+      setEditingGame(null);
+    } else {
+      // Add new game
+      const game: Game = {
+        ...newGame,
+        id: Date.now(),
+      };
+      setGames((prev) => [game, ...prev]);
+    }
+  };
+
+  const handleEditGame = (game: Game) => {
+    setEditingGame(game);
+    setIsFormOpen(true);
+  };
+
+  const handleDeleteGame = (id: number) => {
+    setGames((prev) => prev.filter((game) => game.id !== id));
+  };
+
+  const handleCloseForm = () => {
+    setIsFormOpen(false);
+    setEditingGame(null);
   };
 
   const filteredGames =
@@ -125,6 +151,8 @@ const GamesSection = () => {
               image={game.image}
               category={game.category}
               link={game.link}
+              onEdit={() => handleEditGame(game)}
+              onDelete={() => handleDeleteGame(game.id)}
             />
           ))}
         </div>
@@ -146,8 +174,9 @@ const GamesSection = () => {
       {/* Upload Form Modal */}
       <GameUploadForm
         isOpen={isFormOpen}
-        onClose={() => setIsFormOpen(false)}
+        onClose={handleCloseForm}
         onSubmit={handleAddGame}
+        editingGame={editingGame}
       />
     </section>
   );

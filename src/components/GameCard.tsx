@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { ExternalLink, Gamepad2 } from "lucide-react";
+import { ExternalLink, Gamepad2, Pencil, Trash2 } from "lucide-react";
 
 interface GameCardProps {
   title: string;
@@ -7,9 +7,11 @@ interface GameCardProps {
   image: string;
   category: string;
   link?: string;
+  onEdit?: () => void;
+  onDelete?: () => void;
 }
 
-const GameCard = ({ title, description, image, category, link }: GameCardProps) => {
+const GameCard = ({ title, description, image, category, link, onEdit, onDelete }: GameCardProps) => {
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -33,6 +35,34 @@ const GameCard = ({ title, description, image, category, link }: GameCardProps) 
           <span className="px-3 py-1 text-xs font-medium rounded-full bg-primary/20 text-primary border border-primary/30 backdrop-blur-sm">
             {category}
           </span>
+        </div>
+
+        {/* Edit/Delete Buttons */}
+        <div className="absolute top-3 right-3 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+          {onEdit && (
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                onEdit();
+              }}
+              className="p-2 rounded-lg bg-accent/80 hover:bg-accent text-accent-foreground backdrop-blur-sm transition-colors"
+              aria-label="Edit game"
+            >
+              <Pencil className="w-4 h-4" />
+            </button>
+          )}
+          {onDelete && (
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                onDelete();
+              }}
+              className="p-2 rounded-lg bg-destructive/80 hover:bg-destructive text-destructive-foreground backdrop-blur-sm transition-colors"
+              aria-label="Delete game"
+            >
+              <Trash2 className="w-4 h-4" />
+            </button>
+          )}
         </div>
 
         {/* Play Overlay */}
