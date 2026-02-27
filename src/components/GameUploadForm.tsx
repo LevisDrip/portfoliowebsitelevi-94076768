@@ -95,9 +95,9 @@ const GameUploadForm = ({ isOpen, onClose, onSubmit, editingGame }: GameUploadFo
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: 20 }}
             transition={{ type: "spring", duration: 0.5 }}
-            className="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-lg max-h-[90vh] overflow-y-auto z-50 p-4"
+            className="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto p-4"
           >
-            <div className="glass rounded-xl border border-primary/20 p-6">
+            <div className="glass rounded-xl border border-primary/20 p-6 w-full max-w-lg max-h-[90vh] overflow-y-auto">
               <div className="flex items-center justify-between mb-6">
                 <h2 className="font-display text-2xl font-bold text-gradient">
                   {isEditing ? t.form.editTitle : t.form.addTitle}
