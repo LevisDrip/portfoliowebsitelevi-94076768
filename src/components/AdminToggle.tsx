@@ -2,11 +2,13 @@ import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Lock, LogOut, KeyRound } from "lucide-react";
 import { useAdmin } from "@/context/AdminContext";
+import { useLanguage } from "@/context/LanguageContext";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 
 const AdminToggle = () => {
   const { isAdmin, login, logout } = useAdmin();
+  const { t } = useLanguage();
   const [showPrompt, setShowPrompt] = useState(false);
   const [password, setPassword] = useState("");
   const [error, setError] = useState(false);
@@ -70,26 +72,24 @@ const AdminToggle = () => {
             >
               <div className="flex items-center gap-3 mb-4">
                 <KeyRound className="w-5 h-5 text-primary" />
-                <h3 className="font-display text-lg font-bold text-foreground">Admin Access</h3>
+                <h3 className="font-display text-lg font-bold text-foreground">{t.admin.title}</h3>
               </div>
               <form onSubmit={handleSubmit} className="space-y-4">
                 <Input
                   type="password"
-                  placeholder="Enter password"
+                  placeholder={t.admin.placeholder}
                   value={password}
                   onChange={(e) => { setPassword(e.target.value); setError(false); }}
                   autoFocus
                   className={error ? "border-destructive" : ""}
                 />
-                {error && (
-                  <p className="text-sm text-destructive">Incorrect password</p>
-                )}
+                {error && <p className="text-sm text-destructive">{t.admin.incorrect}</p>}
                 <div className="flex gap-2">
                   <Button type="submit" disabled={loading} className="flex-1">
-                    {loading ? "Checking..." : "Login"}
+                    {loading ? t.admin.checking : t.admin.login}
                   </Button>
                   <Button type="button" variant="outline" onClick={() => { setShowPrompt(false); setError(false); setPassword(""); }}>
-                    Cancel
+                    {t.admin.cancel}
                   </Button>
                 </div>
               </form>

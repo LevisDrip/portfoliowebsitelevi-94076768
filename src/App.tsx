@@ -5,7 +5,9 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { GamesProvider } from "./context/GamesContext";
 import { AdminProvider } from "./context/AdminContext";
+import { LanguageProvider } from "./context/LanguageContext";
 import AdminToggle from "./components/AdminToggle";
+import LanguageToggle from "./components/LanguageToggle";
 import Index from "./pages/Index";
 import GameDetail from "./pages/GameDetail";
 import NotFound from "./pages/NotFound";
@@ -15,21 +17,23 @@ const queryClient = new QueryClient();
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <TooltipProvider>
-      <AdminProvider>
-        <GamesProvider>
-          <Toaster />
-          <Sonner />
-          <AdminToggle />
-          <BrowserRouter>
-          <Routes>
-            <Route path="/" element={<Index />} />
-            <Route path="/game/:id" element={<GameDetail />} />
-            {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-            <Route path="*" element={<NotFound />} />
-          </Routes>
-          </BrowserRouter>
-        </GamesProvider>
-      </AdminProvider>
+      <LanguageProvider>
+        <AdminProvider>
+          <GamesProvider>
+            <Toaster />
+            <Sonner />
+            <AdminToggle />
+            <LanguageToggle />
+            <BrowserRouter>
+              <Routes>
+                <Route path="/" element={<Index />} />
+                <Route path="/game/:id" element={<GameDetail />} />
+                <Route path="*" element={<NotFound />} />
+              </Routes>
+            </BrowserRouter>
+          </GamesProvider>
+        </AdminProvider>
+      </LanguageProvider>
     </TooltipProvider>
   </QueryClientProvider>
 );
