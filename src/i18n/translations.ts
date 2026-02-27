@@ -14,6 +14,7 @@ interface TranslationStrings {
   admin: { title: string; placeholder: string; login: string; cancel: string; checking: string; incorrect: string };
   deleteConfirm: { title: string; description: string; instruction: string; placeholder: string; confirm: string; cancel: string };
   notFound: { title: string; message: string; returnHome: string };
+  about: { title: string; subtitle: string; ageLabel: string; yearsOld: string; bio: string; passionTitle: string; passion: string; skillsTitle: string; skills: string[] };
 }
 
 export const translations: Record<Language, TranslationStrings> = {
@@ -107,6 +108,17 @@ export const translations: Record<Language, TranslationStrings> = {
       message: "Oops! Page not found",
       returnHome: "Return to Home",
     },
+    about: {
+      title: "About Me",
+      subtitle: "The developer behind the games",
+      ageLabel: "Age",
+      yearsOld: "years old",
+      bio: "I'm a passionate game developer who loves creating immersive digital experiences. From pixel art platformers to epic space battles, I bring ideas to life through code and creativity.",
+      passionTitle: "My Passion",
+      passion: "I started making games at a young age and never stopped. Every project is a new adventure — a chance to learn, grow, and share something meaningful with players around the world.",
+      skillsTitle: "Skills",
+      skills: ["Game Design", "Programming", "Pixel Art", "Level Design", "Sound Design", "Storytelling"],
+    },
   },
   nl: {
     hero: {
@@ -190,6 +202,17 @@ export const translations: Record<Language, TranslationStrings> = {
       title: "404",
       message: "Oeps! Pagina niet gevonden",
       returnHome: "Terug naar Home",
+    },
+    about: {
+      title: "Over Mij",
+      subtitle: "De ontwikkelaar achter de games",
+      ageLabel: "Leeftijd",
+      yearsOld: "jaar oud",
+      bio: "Ik ben een gepassioneerde game-ontwikkelaar die graag meeslepende digitale ervaringen creëert. Van pixel art platformers tot epische ruimtegevechten, ik breng ideeën tot leven met code en creativiteit.",
+      passionTitle: "Mijn Passie",
+      passion: "Ik begon op jonge leeftijd met het maken van games en ben nooit gestopt. Elk project is een nieuw avontuur — een kans om te leren, te groeien en iets betekenisvols te delen met spelers over de hele wereld.",
+      skillsTitle: "Vaardigheden",
+      skills: ["Game Design", "Programmeren", "Pixel Art", "Level Design", "Geluidsontwerp", "Storytelling"],
     },
   },
 };
