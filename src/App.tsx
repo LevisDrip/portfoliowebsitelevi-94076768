@@ -6,6 +6,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { GamesProvider } from "./context/GamesContext";
 import { AdminProvider } from "./context/AdminContext";
 import { LanguageProvider } from "./context/LanguageContext";
+import { AboutMeProvider } from "./context/AboutMeContext";
 import AdminToggle from "./components/AdminToggle";
 import LanguageToggle from "./components/LanguageToggle";
 import Index from "./pages/Index";
@@ -19,19 +20,21 @@ const App = () => (
     <TooltipProvider>
       <LanguageProvider>
         <AdminProvider>
-          <GamesProvider>
-            <Toaster />
-            <Sonner />
-            <AdminToggle />
-            <LanguageToggle />
-            <BrowserRouter>
-              <Routes>
-                <Route path="/" element={<Index />} />
-                <Route path="/game/:id" element={<GameDetail />} />
-                <Route path="*" element={<NotFound />} />
-              </Routes>
-            </BrowserRouter>
-          </GamesProvider>
+          <AboutMeProvider>
+            <GamesProvider>
+              <Toaster />
+              <Sonner />
+              <AdminToggle />
+              <LanguageToggle />
+              <BrowserRouter>
+                <Routes>
+                  <Route path="/" element={<Index />} />
+                  <Route path="/game/:id" element={<GameDetail />} />
+                  <Route path="*" element={<NotFound />} />
+                </Routes>
+              </BrowserRouter>
+            </GamesProvider>
+          </AboutMeProvider>
         </AdminProvider>
       </LanguageProvider>
     </TooltipProvider>
