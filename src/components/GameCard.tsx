@@ -56,7 +56,7 @@ const GameCard = ({ id, title, description, image, category, link, onEdit, onDel
         </div>
 
         {/* Edit/Delete Buttons */}
-        <div className="absolute top-3 right-3 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+        <div className="absolute top-3 right-3 z-20 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-auto">
           {onEdit && (
             <button
               onClick={(e) => {
@@ -85,7 +85,7 @@ const GameCard = ({ id, title, description, image, category, link, onEdit, onDel
 
         {/* Play Overlay */}
         <motion.div 
-          className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+          className="pointer-events-none absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300"
           initial={false}
         >
           <div className="w-16 h-16 rounded-full bg-primary/90 flex items-center justify-center glow-primary">
