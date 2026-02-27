@@ -62,7 +62,7 @@ export const GamesProvider = ({ children }: { children: ReactNode }) => {
     games.map((game) => {
       if (game.translationKey && t.defaultGames[game.translationKey as keyof typeof t.defaultGames]) {
         const tr = t.defaultGames[game.translationKey as keyof typeof t.defaultGames];
-        return { ...game, title: tr.title, description: tr.description };
+        return { ...game, description: tr.description };
       }
       return game;
     }),
