@@ -8,20 +8,22 @@ import { useGames, Game } from "@/context/GamesContext";
 import { useAdmin } from "@/context/AdminContext";
 import { useLanguage } from "@/context/LanguageContext";
 
-const categoryKeys = ["All", "Action", "RPG", "Platformer", "Puzzle"] as const;
+const builtInLabels: Record<string, (t: any) => string> = {
+  Action: (t) => t.games.action,
+  RPG: (t) => t.games.rpg,
+  Platformer: (t) => t.games.platformer,
+  Puzzle: (t) => t.games.puzzle,
+};
 
 const GamesSection = () => {
   const [activeCategory, setActiveCategory] = useState("All");
-  const { games, addGame, updateGame, deleteGame } = useGames();
+  const { games, categories, addGame, updateGame, deleteGame } = useGames();
   const { isAdmin } = useAdmin();
   const { t } = useLanguage();
 
-  const categoryLabels: Record<string, string> = {
-    All: t.games.all,
-    Action: t.games.action,
-    RPG: t.games.rpg,
-    Platformer: t.games.platformer,
-    Puzzle: t.games.puzzle,
+  const getCategoryLabel = (cat: string) => {
+    if (cat === "All") return t.games.all;
+    return builtInLabels[cat] ? builtInLabels[cat](t) : cat;
   };
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [editingGame, setEditingGame] = useState<Game | null>(null);
@@ -77,7 +79,7 @@ const GamesSection = () => {
           viewport={{ once: true }}
           className="flex flex-wrap justify-center items-center gap-3 mb-12"
         >
-          {categoryKeys.map((category) => (
+          {["All", ...categories].map((category) => (
             <button
               key={category}
               onClick={() => setActiveCategory(category)}
@@ -87,7 +89,7 @@ const GamesSection = () => {
                   : "glass glass-hover text-muted-foreground hover:text-foreground"
               }`}
             >
-              {categoryLabels[category]}
+              {getCategoryLabel(category)}
             </button>
           ))}
           {isAdmin && (
