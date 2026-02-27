@@ -6,6 +6,7 @@ import GameUploadForm from "./GameUploadForm";
 import { Button } from "@/components/ui/button";
 import { useGames, Game } from "@/context/GamesContext";
 import { useAdmin } from "@/context/AdminContext";
+import { useLanguage } from "@/context/LanguageContext";
 
 const categories = ["All", "Action", "RPG", "Platformer", "Puzzle"];
 
@@ -13,6 +14,7 @@ const GamesSection = () => {
   const [activeCategory, setActiveCategory] = useState("All");
   const { games, addGame, updateGame, deleteGame } = useGames();
   const { isAdmin } = useAdmin();
+  const { t } = useLanguage();
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [editingGame, setEditingGame] = useState<Game | null>(null);
 
@@ -44,13 +46,13 @@ const GamesSection = () => {
       ? games
       : games.filter((game) => game.category === activeCategory);
 
+  const getCategoryLabel = (cat: string) => (cat === "All" ? t.games.all : cat);
+
   return (
     <section id="games" className="py-24 relative">
-      {/* Background Gradient */}
       <div className="absolute inset-0 bg-gradient-to-b from-background via-secondary/20 to-background pointer-events-none" />
 
       <div className="container mx-auto px-6 relative">
-        {/* Section Header */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -58,15 +60,11 @@ const GamesSection = () => {
           className="text-center mb-16"
         >
           <h2 className="font-display text-4xl md:text-5xl font-bold mb-4">
-            <span className="text-gradient">My Games</span>
+            <span className="text-gradient">{t.games.title}</span>
           </h2>
-          <p className="text-muted-foreground text-lg max-w-xl mx-auto">
-            Explore my collection of games. Each project represents countless
-            hours of passion and creativity.
-          </p>
+          <p className="text-muted-foreground text-lg max-w-xl mx-auto">{t.games.subtitle}</p>
         </motion.div>
 
-        {/* Category Filter + Add Button */}
         <motion.div
           initial={{ opacity: 0, y: 10 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -83,7 +81,7 @@ const GamesSection = () => {
                   : "glass glass-hover text-muted-foreground hover:text-foreground"
               }`}
             >
-              {category}
+              {getCategoryLabel(category)}
             </button>
           ))}
           {isAdmin && (
@@ -92,12 +90,11 @@ const GamesSection = () => {
               className="px-5 py-2 rounded-full bg-accent text-accent-foreground hover:bg-accent/80 transition-all duration-300"
             >
               <Plus className="w-4 h-4 mr-1" />
-              Add Game
+              {t.games.addGame}
             </Button>
           )}
         </motion.div>
 
-        {/* Games Grid */}
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
           {filteredGames.map((game) => (
             <GameCard
@@ -114,21 +111,13 @@ const GamesSection = () => {
           ))}
         </div>
 
-        {/* Empty State */}
         {filteredGames.length === 0 && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            className="text-center py-16"
-          >
-            <p className="text-muted-foreground">
-              No games found in this category yet.
-            </p>
+          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-center py-16">
+            <p className="text-muted-foreground">{t.games.noGames}</p>
           </motion.div>
         )}
       </div>
 
-      {/* Upload Form Modal */}
       <GameUploadForm
         isOpen={isFormOpen}
         onClose={handleCloseForm}
