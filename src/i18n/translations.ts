@@ -3,6 +3,11 @@ export type Language = "en" | "nl";
 interface TranslationStrings {
   hero: { badge: string; titleLine1: string; titleHighlight: string; titleLine2: string; subtitle: string; cta: string };
   games: { title: string; subtitle: string; addGame: string; noGames: string; all: string; action: string; rpg: string; platformer: string; puzzle: string };
+  defaultGames: {
+    stellar: { title: string; description: string };
+    enchanted: { title: string; description: string };
+    pixel: { title: string; description: string };
+  };
   form: { addTitle: string; editTitle: string; imageLabel: string; uploadImage: string; maxSize: string; imageRequired: string; imageFileError: string; imageSizeError: string; titleLabel: string; titlePlaceholder: string; descriptionLabel: string; descriptionPlaceholder: string; categoryLabel: string; categoryPlaceholder: string; linkLabel: string; saveChanges: string; addGameBtn: string };
   detail: { notFoundTitle: string; notFoundDesc: string; back: string; backToPortfolio: string; playNow: string; viewProject: string; gameDetails: string; category: string; status: string; available: string };
   footer: { brand: string; copyright: string };
@@ -32,6 +37,11 @@ export const translations: Record<Language, TranslationStrings> = {
       rpg: "RPG",
       platformer: "Platformer",
       puzzle: "Puzzle",
+    },
+    defaultGames: {
+      stellar: { title: "Stellar Warfare", description: "An epic space battle game with intense multiplayer combat and stunning visuals. Command your fleet across the galaxy." },
+      enchanted: { title: "Enchanted Woods", description: "A mystical fantasy RPG set in a magical forest. Discover secrets, battle creatures, and uncover ancient mysteries." },
+      pixel: { title: "Pixel Runner", description: "A retro-style platformer with challenging levels, collectibles, and nostalgic 8-bit graphics." },
     },
     // Game Upload Form
     form: {
@@ -106,6 +116,11 @@ export const translations: Record<Language, TranslationStrings> = {
       rpg: "RPG",
       platformer: "Platformer",
       puzzle: "Puzzel",
+    },
+    defaultGames: {
+      stellar: { title: "Stellaire Oorlogsvoering", description: "Een episch ruimtegevecht-spel met intense multiplayer-actie en verbluffende graphics. Leid je vloot door het heelal." },
+      enchanted: { title: "Betoverde Bossen", description: "Een mystieke fantasy-RPG in een magisch bos. Ontdek geheimen, bestrijd wezens en ontrafel oude mysteries." },
+      pixel: { title: "Pixel Renner", description: "Een retro-platformer met uitdagende levels, verzamelobjecten en nostalgische 8-bit graphics." },
     },
     form: {
       addTitle: "Nieuwe Game Toevoegen",
