@@ -2,7 +2,7 @@ export type Language = "en" | "nl";
 
 interface TranslationStrings {
   hero: { badge: string; titleLine1: string; titleHighlight: string; titleLine2: string; subtitle: string; cta: string };
-  games: { title: string; subtitle: string; addGame: string; noGames: string; all: string };
+  games: { title: string; subtitle: string; addGame: string; noGames: string; all: string; action: string; rpg: string; platformer: string; puzzle: string };
   form: { addTitle: string; editTitle: string; imageLabel: string; uploadImage: string; maxSize: string; imageRequired: string; imageFileError: string; imageSizeError: string; titleLabel: string; titlePlaceholder: string; descriptionLabel: string; descriptionPlaceholder: string; categoryLabel: string; categoryPlaceholder: string; linkLabel: string; saveChanges: string; addGameBtn: string };
   detail: { notFoundTitle: string; notFoundDesc: string; back: string; backToPortfolio: string; playNow: string; viewProject: string; gameDetails: string; category: string; status: string; available: string };
   footer: { brand: string; copyright: string };
@@ -28,6 +28,10 @@ export const translations: Record<Language, TranslationStrings> = {
       addGame: "Add Game",
       noGames: "No games found in this category yet.",
       all: "All",
+      action: "Action",
+      rpg: "RPG",
+      platformer: "Platformer",
+      puzzle: "Puzzle",
     },
     // Game Upload Form
     form: {
@@ -98,6 +102,10 @@ export const translations: Record<Language, TranslationStrings> = {
       addGame: "Game Toevoegen",
       noGames: "Nog geen games gevonden in deze categorie.",
       all: "Alle",
+      action: "Actie",
+      rpg: "RPG",
+      platformer: "Platformer",
+      puzzle: "Puzzel",
     },
     form: {
       addTitle: "Nieuwe Game Toevoegen",

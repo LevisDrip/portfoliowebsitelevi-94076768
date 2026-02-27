@@ -1,6 +1,11 @@
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { ExternalLink, Gamepad2, Pencil, Trash2 } from "lucide-react";
+import { useLanguage } from "@/context/LanguageContext";
+
+const categoryMap: Record<string, "action" | "rpg" | "platformer" | "puzzle"> = {
+  Action: "action", RPG: "rpg", Platformer: "platformer", Puzzle: "puzzle",
+};
 
 interface GameCardProps {
   id: number;
@@ -15,6 +20,8 @@ interface GameCardProps {
 
 const GameCard = ({ id, title, description, image, category, link, onEdit, onDelete }: GameCardProps) => {
   const navigate = useNavigate();
+  const { t } = useLanguage();
+  const translatedCategory = categoryMap[category] ? t.games[categoryMap[category]] : category;
 
   const handleCardClick = () => {
     navigate(`/game/${id}`);
@@ -42,7 +49,7 @@ const GameCard = ({ id, title, description, image, category, link, onEdit, onDel
         {/* Category Badge */}
         <div className="absolute top-3 left-3">
           <span className="px-3 py-1 text-xs font-medium rounded-full bg-primary/20 text-primary border border-primary/30 backdrop-blur-sm">
-            {category}
+            {translatedCategory}
           </span>
         </div>
 

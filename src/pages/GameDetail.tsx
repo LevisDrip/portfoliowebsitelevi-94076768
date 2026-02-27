@@ -5,6 +5,10 @@ import { Button } from "@/components/ui/button";
 import { useGames } from "@/context/GamesContext";
 import { useLanguage } from "@/context/LanguageContext";
 
+const categoryMap: Record<string, "action" | "rpg" | "platformer" | "puzzle"> = {
+  Action: "action", RPG: "rpg", Platformer: "platformer", Puzzle: "puzzle",
+};
+
 const GameDetail = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
@@ -40,7 +44,9 @@ const GameDetail = () => {
           </Button>
         </motion.div>
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }} className="absolute bottom-8 left-6 md:left-12">
-          <span className="px-4 py-2 text-sm font-medium rounded-full bg-primary/20 text-primary border border-primary/30 backdrop-blur-sm">{game.category}</span>
+          <span className="px-4 py-2 text-sm font-medium rounded-full bg-primary/20 text-primary border border-primary/30 backdrop-blur-sm">
+            {categoryMap[game.category] ? t.games[categoryMap[game.category]] : game.category}
+          </span>
         </motion.div>
       </div>
 
@@ -76,7 +82,7 @@ const GameDetail = () => {
             <div className="grid md:grid-cols-2 gap-6">
               <div>
                 <h3 className="text-sm font-medium text-muted-foreground uppercase tracking-wider mb-2">{t.detail.category}</h3>
-                <p className="text-foreground font-medium">{game.category}</p>
+                <p className="text-foreground font-medium">{categoryMap[game.category] ? t.games[categoryMap[game.category]] : game.category}</p>
               </div>
               <div>
                 <h3 className="text-sm font-medium text-muted-foreground uppercase tracking-wider mb-2">{t.detail.status}</h3>

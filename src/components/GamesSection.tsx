@@ -8,13 +8,21 @@ import { useGames, Game } from "@/context/GamesContext";
 import { useAdmin } from "@/context/AdminContext";
 import { useLanguage } from "@/context/LanguageContext";
 
-const categories = ["All", "Action", "RPG", "Platformer", "Puzzle"];
+const categoryKeys = ["All", "Action", "RPG", "Platformer", "Puzzle"] as const;
 
 const GamesSection = () => {
   const [activeCategory, setActiveCategory] = useState("All");
   const { games, addGame, updateGame, deleteGame } = useGames();
   const { isAdmin } = useAdmin();
   const { t } = useLanguage();
+
+  const categoryLabels: Record<string, string> = {
+    All: t.games.all,
+    Action: t.games.action,
+    RPG: t.games.rpg,
+    Platformer: t.games.platformer,
+    Puzzle: t.games.puzzle,
+  };
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [editingGame, setEditingGame] = useState<Game | null>(null);
 
@@ -46,8 +54,6 @@ const GamesSection = () => {
       ? games
       : games.filter((game) => game.category === activeCategory);
 
-  const getCategoryLabel = (cat: string) => (cat === "All" ? t.games.all : cat);
-
   return (
     <section id="games" className="py-24 relative">
       <div className="absolute inset-0 bg-gradient-to-b from-background via-secondary/20 to-background pointer-events-none" />
@@ -71,7 +77,7 @@ const GamesSection = () => {
           viewport={{ once: true }}
           className="flex flex-wrap justify-center items-center gap-3 mb-12"
         >
-          {categories.map((category) => (
+          {categoryKeys.map((category) => (
             <button
               key={category}
               onClick={() => setActiveCategory(category)}
@@ -81,7 +87,7 @@ const GamesSection = () => {
                   : "glass glass-hover text-muted-foreground hover:text-foreground"
               }`}
             >
-              {getCategoryLabel(category)}
+              {categoryLabels[category]}
             </button>
           ))}
           {isAdmin && (
