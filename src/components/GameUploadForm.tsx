@@ -100,7 +100,7 @@ const GameUploadForm = ({ isOpen, onClose, onSubmit, editingGame }: GameUploadFo
   return (
     <AnimatePresence>
       {isOpen && (
-        <>
+        <motion.div key="game-upload-modal" className="contents" initial={false}>
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={handleClose} className="fixed inset-0 bg-background/80 backdrop-blur-sm z-50" />
           <motion.div
             initial={{ opacity: 0, scale: 0.95, y: 20 }}
@@ -208,7 +208,7 @@ const GameUploadForm = ({ isOpen, onClose, onSubmit, editingGame }: GameUploadFo
               </Form>
             </div>
           </motion.div>
-        </>
+        </motion.div>
       )}
     </AnimatePresence>
   );

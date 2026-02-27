@@ -152,7 +152,7 @@ const GamesSection = () => {
 
       <AnimatePresence>
         {deletingGameId !== null && (
-          <>
+          <motion.div key="delete-modal" className="contents" initial={false}>
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
@@ -194,7 +194,7 @@ const GamesSection = () => {
                 </div>
               </div>
             </motion.div>
-          </>
+          </motion.div>
         )}
       </AnimatePresence>
     </section>
