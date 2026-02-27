@@ -34,43 +34,55 @@ interface GamesContextType {
   games: Game[];
   categories: string[];
   loading: boolean;
-  addGame: (game: Omit<Game, "id">) => void;
-  updateGame: (id: number, game: Omit<Game, "id">) => void;
-  deleteGame: (id: number) => void;
+  addGame: (game: Omit<Game, "id">) => Promise<void>;
+  updateGame: (id: number, game: Omit<Game, "id">) => Promise<void>;
+  deleteGame: (id: number) => Promise<void>;
   getGameById: (id: number) => Game | undefined;
   addCategory: (category: string) => void;
 }
 
 const GamesContext = createContext<GamesContextType | undefined>(undefined);
 
+const mapRowToGame = (r: any): Game => ({
+  id: r.id,
+  title: r.title,
+  description: r.description,
+  image: r.translation_key ? (localImageMap[r.translation_key] || r.image) : r.image,
+  category: r.category,
+  link: r.link || undefined,
+  translationKey: r.translation_key || undefined,
+});
+
 export const GamesProvider = ({ children }: { children: ReactNode }) => {
   const [games, setGames] = useState<Game[]>([]);
   const [categories, setCategories] = useState<string[]>(defaultCategories);
   const [loading, setLoading] = useState(true);
-  const [dbLoaded, setDbLoaded] = useState(false);
   const { t } = useLanguage();
 
-  // Load games from database
+  const fetchGames = useCallback(async () => {
+    const { data, error } = await supabase
+      .from("games")
+      .select("*")
+      .order("created_at", { ascending: false });
+
+    if (error) {
+      console.error("Failed to load games:", error);
+      return [] as Game[];
+    }
+
+    const mapped = (data ?? []).map(mapRowToGame);
+    setGames(mapped);
+    return mapped;
+  }, []);
+
+  // Load games from database and seed once if empty
   useEffect(() => {
     const load = async () => {
-      const { data: rows } = await supabase
-        .from("games")
-        .select("*")
-        .order("created_at", { ascending: false });
+      setLoading(true);
+      const loadedGames = await fetchGames();
 
-      if (rows && rows.length > 0) {
-        setGames(rows.map((r: any) => ({
-          id: r.id,
-          title: r.title,
-          description: r.description,
-          image: r.translation_key ? (localImageMap[r.translation_key] || r.image) : r.image,
-          category: r.category,
-          link: r.link || undefined,
-          translationKey: r.translation_key || undefined,
-        })));
-      } else {
-        // Seed defaults into DB
-        const inserts = defaultGames.map(g => ({
+      if (loadedGames.length === 0) {
+        const inserts = defaultGames.map((g) => ({
           title: g.title,
           description: g.description,
           image: g.image,
@@ -78,73 +90,57 @@ export const GamesProvider = ({ children }: { children: ReactNode }) => {
           link: g.link || null,
           translation_key: g.translationKey || null,
         }));
-        const { data: inserted } = await supabase
-          .from("games")
-          .insert(inserts)
-          .select("*");
 
-        if (inserted) {
-          setGames(inserted.map((r: any) => ({
-            id: r.id,
-            title: r.title,
-            description: r.description,
-            image: r.translation_key ? (localImageMap[r.translation_key] || r.image) : r.image,
-            category: r.category,
-            link: r.link || undefined,
-            translationKey: r.translation_key || undefined,
-          })));
+        const { error: seedError } = await supabase.from("games").insert(inserts);
+        if (seedError) {
+          console.error("Failed to seed default games:", seedError);
         }
+
+        await fetchGames();
       }
-      setDbLoaded(true);
+
       setLoading(false);
     };
+
     load();
-  }, []);
+  }, [fetchGames]);
 
   const addCategory = (category: string) => {
-    setCategories((prev) => prev.includes(category) ? prev : [...prev, category]);
+    setCategories((prev) => (prev.includes(category) ? prev : [...prev, category]));
   };
 
-  const translatedGames = useMemo(() =>
-    games.map((game) => {
-      if (game.translationKey && t.defaultGames[game.translationKey as keyof typeof t.defaultGames]) {
-        const tr = t.defaultGames[game.translationKey as keyof typeof t.defaultGames];
-        return { ...game, description: tr.description };
-      }
-      return game;
-    }),
+  const translatedGames = useMemo(
+    () =>
+      games.map((game) => {
+        if (game.translationKey && t.defaultGames[game.translationKey as keyof typeof t.defaultGames]) {
+          const tr = t.defaultGames[game.translationKey as keyof typeof t.defaultGames];
+          return { ...game, description: tr.description };
+        }
+        return game;
+      }),
     [games, t]
   );
 
   const addGame = useCallback(async (newGame: Omit<Game, "id">) => {
-    const { data: inserted } = await supabase
-      .from("games")
-      .insert({
-        title: newGame.title,
-        description: newGame.description,
-        image: newGame.image,
-        category: newGame.category,
-        link: newGame.link || null,
-        translation_key: newGame.translationKey || null,
-      })
-      .select("*");
+    const { error } = await supabase.from("games").insert({
+      title: newGame.title,
+      description: newGame.description,
+      image: newGame.image,
+      category: newGame.category,
+      link: newGame.link || null,
+      translation_key: newGame.translationKey || null,
+    });
 
-    if (inserted && inserted.length > 0) {
-      const r = inserted[0] as any;
-      setGames((prev) => [{
-        id: r.id,
-        title: r.title,
-        description: r.description,
-        image: r.image,
-        category: r.category,
-        link: r.link || undefined,
-        translationKey: r.translation_key || undefined,
-      }, ...prev]);
+    if (error) {
+      console.error("Failed to add game:", error);
+      return;
     }
-  }, []);
+
+    await fetchGames();
+  }, [fetchGames]);
 
   const updateGame = useCallback(async (id: number, updatedGame: Omit<Game, "id">) => {
-    await supabase
+    const { error } = await supabase
       .from("games")
       .update({
         title: updatedGame.title,
@@ -156,19 +152,26 @@ export const GamesProvider = ({ children }: { children: ReactNode }) => {
       })
       .eq("id", id);
 
-    setGames((prev) =>
-      prev.map((g) => (g.id === id ? { ...updatedGame, id } : g))
-    );
-  }, []);
+    if (error) {
+      console.error("Failed to update game:", error);
+      return;
+    }
+
+    await fetchGames();
+  }, [fetchGames]);
 
   const deleteGame = useCallback(async (id: number) => {
-    await supabase.from("games").delete().eq("id", id);
-    setGames((prev) => prev.filter((game) => game.id !== id));
-  }, []);
+    const { error } = await supabase.from("games").delete().eq("id", id);
 
-  const getGameById = (id: number) => {
-    return translatedGames.find((game) => game.id === id);
-  };
+    if (error) {
+      console.error("Failed to delete game:", error);
+      return;
+    }
+
+    await fetchGames();
+  }, [fetchGames]);
+
+  const getGameById = (id: number) => translatedGames.find((game) => game.id === id);
 
   return (
     <GamesContext.Provider
