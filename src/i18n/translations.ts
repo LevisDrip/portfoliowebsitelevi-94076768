@@ -12,6 +12,7 @@ interface TranslationStrings {
   detail: { notFoundTitle: string; notFoundDesc: string; back: string; backToPortfolio: string; playNow: string; viewProject: string; gameDetails: string; category: string; status: string; available: string };
   footer: { brand: string; copyright: string };
   admin: { title: string; placeholder: string; login: string; cancel: string; checking: string; incorrect: string };
+  deleteConfirm: { title: string; description: string; instruction: string; placeholder: string; confirm: string; cancel: string };
   notFound: { title: string; message: string; returnHome: string };
 }
 
@@ -92,6 +93,14 @@ export const translations: Record<Language, TranslationStrings> = {
       checking: "Checking...",
       incorrect: "Incorrect password",
     },
+    deleteConfirm: {
+      title: "Delete Game",
+      description: "This action cannot be undone. This will permanently delete the game.",
+      instruction: 'Type "delete" to confirm:',
+      placeholder: "delete",
+      confirm: "Delete",
+      cancel: "Cancel",
+    },
     // Not Found
     notFound: {
       title: "404",
@@ -168,6 +177,14 @@ export const translations: Record<Language, TranslationStrings> = {
       cancel: "Annuleren",
       checking: "Controleren...",
       incorrect: "Onjuist wachtwoord",
+    },
+    deleteConfirm: {
+      title: "Game Verwijderen",
+      description: "Deze actie kan niet ongedaan worden gemaakt. De game wordt permanent verwijderd.",
+      instruction: 'Typ "delete" om te bevestigen:',
+      placeholder: "delete",
+      confirm: "Verwijderen",
+      cancel: "Annuleren",
     },
     notFound: {
       title: "404",

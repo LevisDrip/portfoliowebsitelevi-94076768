@@ -1,9 +1,10 @@
 import { useState } from "react";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { Plus } from "lucide-react";
 import GameCard from "./GameCard";
 import GameUploadForm from "./GameUploadForm";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { useGames, Game } from "@/context/GamesContext";
 import { useAdmin } from "@/context/AdminContext";
 import { useLanguage } from "@/context/LanguageContext";
@@ -27,6 +28,8 @@ const GamesSection = () => {
   };
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [editingGame, setEditingGame] = useState<Game | null>(null);
+  const [deletingGameId, setDeletingGameId] = useState<number | null>(null);
+  const [deleteInput, setDeleteInput] = useState("");
 
   const handleAddGame = (newGame: Omit<Game, "id">) => {
     if (editingGame) {
@@ -43,7 +46,21 @@ const GamesSection = () => {
   };
 
   const handleDeleteGame = (id: number) => {
-    deleteGame(id);
+    setDeletingGameId(id);
+    setDeleteInput("");
+  };
+
+  const confirmDelete = () => {
+    if (deletingGameId !== null && deleteInput.toLowerCase() === "delete") {
+      deleteGame(deletingGameId);
+      setDeletingGameId(null);
+      setDeleteInput("");
+    }
+  };
+
+  const cancelDelete = () => {
+    setDeletingGameId(null);
+    setDeleteInput("");
   };
 
   const handleCloseForm = () => {
@@ -132,6 +149,54 @@ const GamesSection = () => {
         onSubmit={handleAddGame}
         editingGame={editingGame}
       />
+
+      <AnimatePresence>
+        {deletingGameId !== null && (
+          <>
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={cancelDelete}
+              className="fixed inset-0 bg-background/80 backdrop-blur-sm z-50"
+            />
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.9, y: 20 }}
+              className="fixed inset-0 z-50 flex items-center justify-center p-4"
+            >
+              <div
+                className="glass rounded-xl border border-destructive/30 p-6 w-full max-w-sm"
+                onClick={(e) => e.stopPropagation()}
+              >
+                <h3 className="font-display text-xl font-bold text-foreground mb-2">{t.deleteConfirm.title}</h3>
+                <p className="text-sm text-muted-foreground mb-4">{t.deleteConfirm.description}</p>
+                <label className="text-sm font-medium text-foreground">{t.deleteConfirm.instruction}</label>
+                <Input
+                  value={deleteInput}
+                  onChange={(e) => setDeleteInput(e.target.value)}
+                  placeholder={t.deleteConfirm.placeholder}
+                  className="mt-2 mb-4 bg-muted/50 border-muted-foreground/20 focus:border-destructive"
+                  autoFocus
+                />
+                <div className="flex gap-2">
+                  <Button
+                    onClick={confirmDelete}
+                    disabled={deleteInput.toLowerCase() !== "delete"}
+                    className="flex-1 bg-destructive hover:bg-destructive/90 text-destructive-foreground"
+                  >
+                    {t.deleteConfirm.confirm}
+                  </Button>
+                  <Button variant="outline" onClick={cancelDelete}>
+                    {t.deleteConfirm.cancel}
+                  </Button>
+                </div>
+              </div>
+            </motion.div>
+          </>
+        )}
+      </AnimatePresence>
     </section>
   );
 };
