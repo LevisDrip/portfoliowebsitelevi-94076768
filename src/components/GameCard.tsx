@@ -23,7 +23,9 @@ const GameCard = ({ id, title, description, image, category, link, onEdit, onDel
   const { t } = useLanguage();
   const translatedCategory = categoryMap[category] ? t.games[categoryMap[category]] : category;
 
-  const handleCardClick = () => {
+  const handleCardClick = (e: React.MouseEvent) => {
+    const target = e.target as HTMLElement;
+    if (target.closest('button[aria-label]')) return;
     navigate(`/game/${id}`);
   };
 
