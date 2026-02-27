@@ -5,12 +5,14 @@ import GameCard from "./GameCard";
 import GameUploadForm from "./GameUploadForm";
 import { Button } from "@/components/ui/button";
 import { useGames, Game } from "@/context/GamesContext";
+import { useAdmin } from "@/context/AdminContext";
 
 const categories = ["All", "Action", "RPG", "Platformer", "Puzzle"];
 
 const GamesSection = () => {
   const [activeCategory, setActiveCategory] = useState("All");
   const { games, addGame, updateGame, deleteGame } = useGames();
+  const { isAdmin } = useAdmin();
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [editingGame, setEditingGame] = useState<Game | null>(null);
 
@@ -84,13 +86,15 @@ const GamesSection = () => {
               {category}
             </button>
           ))}
-          <Button
-            onClick={() => setIsFormOpen(true)}
-            className="px-5 py-2 rounded-full bg-accent text-accent-foreground hover:bg-accent/80 transition-all duration-300"
-          >
-            <Plus className="w-4 h-4 mr-1" />
-            Add Game
-          </Button>
+          {isAdmin && (
+            <Button
+              onClick={() => setIsFormOpen(true)}
+              className="px-5 py-2 rounded-full bg-accent text-accent-foreground hover:bg-accent/80 transition-all duration-300"
+            >
+              <Plus className="w-4 h-4 mr-1" />
+              Add Game
+            </Button>
+          )}
         </motion.div>
 
         {/* Games Grid */}
@@ -104,8 +108,8 @@ const GamesSection = () => {
               image={game.image}
               category={game.category}
               link={game.link}
-              onEdit={() => handleEditGame(game)}
-              onDelete={() => handleDeleteGame(game.id)}
+              onEdit={isAdmin ? () => handleEditGame(game) : undefined}
+              onDelete={isAdmin ? () => handleDeleteGame(game.id) : undefined}
             />
           ))}
         </div>
