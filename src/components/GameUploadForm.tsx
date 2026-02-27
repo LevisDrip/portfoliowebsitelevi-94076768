@@ -7,6 +7,7 @@ import { X, Upload, ImagePlus, Save } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import { useGames } from "@/context/GamesContext";
 import {
   Form, FormControl, FormField, FormItem, FormLabel, FormMessage,
 } from "@/components/ui/form";
@@ -15,7 +16,7 @@ import {
 } from "@/components/ui/select";
 import { useLanguage } from "@/context/LanguageContext";
 
-const categories = ["Action", "RPG", "Platformer", "Puzzle"];
+const NEW_CATEGORY_VALUE = "__new__";
 
 const formSchema = z.object({
   title: z.string().min(1, "Title is required").max(50, "Title too long"),
@@ -45,7 +46,10 @@ interface GameUploadFormProps {
 const GameUploadForm = ({ isOpen, onClose, onSubmit, editingGame }: GameUploadFormProps) => {
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [imageError, setImageError] = useState<string | null>(null);
+  const [newCategoryName, setNewCategoryName] = useState("");
+  const [isNewCategory, setIsNewCategory] = useState(false);
   const { t } = useLanguage();
+  const { categories, addCategory } = useGames();
   const isEditing = !!editingGame;
 
   const form = useForm<FormValues>({
@@ -77,13 +81,21 @@ const GameUploadForm = ({ isOpen, onClose, onSubmit, editingGame }: GameUploadFo
 
   const handleFormSubmit = (values: FormValues) => {
     if (!imagePreview) { setImageError(t.form.imageRequired); return; }
-    onSubmit({ title: values.title, description: values.description, image: imagePreview, category: values.category, link: values.link || undefined });
+    let category = values.category;
+    if (category === NEW_CATEGORY_VALUE) {
+      if (!newCategoryName.trim()) return;
+      category = newCategoryName.trim();
+      addCategory(category);
+    }
+    onSubmit({ title: values.title, description: values.description, image: imagePreview, category, link: values.link || undefined });
     form.reset();
     setImagePreview(null);
+    setIsNewCategory(false);
+    setNewCategoryName("");
     onClose();
   };
 
-  const handleClose = () => { form.reset(); setImagePreview(null); setImageError(null); onClose(); };
+  const handleClose = () => { form.reset(); setImagePreview(null); setImageError(null); setIsNewCategory(false); setNewCategoryName(""); onClose(); };
 
   return (
     <AnimatePresence>
@@ -150,10 +162,33 @@ const GameUploadForm = ({ isOpen, onClose, onSubmit, editingGame }: GameUploadFo
                   <FormField control={form.control} name="category" render={({ field }) => (
                     <FormItem>
                       <FormLabel>{t.form.categoryLabel}</FormLabel>
-                      <Select onValueChange={field.onChange} value={field.value}>
+                      <Select
+                        onValueChange={(val) => {
+                          if (val === NEW_CATEGORY_VALUE) {
+                            setIsNewCategory(true);
+                            field.onChange(val);
+                          } else {
+                            setIsNewCategory(false);
+                            setNewCategoryName("");
+                            field.onChange(val);
+                          }
+                        }}
+                        value={field.value}
+                      >
                         <FormControl><SelectTrigger className="bg-muted/50 border-muted-foreground/20 focus:border-primary"><SelectValue placeholder={t.form.categoryPlaceholder} /></SelectTrigger></FormControl>
-                        <SelectContent>{categories.map((cat) => <SelectItem key={cat} value={cat}>{cat}</SelectItem>)}</SelectContent>
+                        <SelectContent>
+                          {categories.map((cat) => <SelectItem key={cat} value={cat}>{cat}</SelectItem>)}
+                          <SelectItem value={NEW_CATEGORY_VALUE}>{t.form.newCategory}</SelectItem>
+                        </SelectContent>
                       </Select>
+                      {isNewCategory && (
+                        <Input
+                          placeholder={t.form.newCategoryPlaceholder}
+                          value={newCategoryName}
+                          onChange={(e) => setNewCategoryName(e.target.value)}
+                          className="mt-2 bg-muted/50 border-muted-foreground/20 focus:border-primary"
+                        />
+                      )}
                       <FormMessage />
                     </FormItem>
                   )} />

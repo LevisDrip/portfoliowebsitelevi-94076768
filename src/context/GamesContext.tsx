@@ -14,12 +14,16 @@ export interface Game {
   translationKey?: string;
 }
 
+const defaultCategories = ["Action", "RPG", "Platformer", "Puzzle"];
+
 interface GamesContextType {
   games: Game[];
+  categories: string[];
   addGame: (game: Omit<Game, "id">) => void;
   updateGame: (id: number, game: Omit<Game, "id">) => void;
   deleteGame: (id: number) => void;
   getGameById: (id: number) => Game | undefined;
+  addCategory: (category: string) => void;
 }
 
 const GamesContext = createContext<GamesContextType | undefined>(undefined);
@@ -56,7 +60,12 @@ const initialGames: Game[] = [
 
 export const GamesProvider = ({ children }: { children: ReactNode }) => {
   const [games, setGames] = useState<Game[]>(initialGames);
+  const [categories, setCategories] = useState<string[]>(defaultCategories);
   const { t } = useLanguage();
+
+  const addCategory = (category: string) => {
+    setCategories((prev) => prev.includes(category) ? prev : [...prev, category]);
+  };
 
   const translatedGames = useMemo(() =>
     games.map((game) => {
@@ -93,7 +102,7 @@ export const GamesProvider = ({ children }: { children: ReactNode }) => {
 
   return (
     <GamesContext.Provider
-      value={{ games: translatedGames, addGame, updateGame, deleteGame, getGameById }}
+      value={{ games: translatedGames, categories, addGame, updateGame, deleteGame, getGameById, addCategory }}
     >
       {children}
     </GamesContext.Provider>

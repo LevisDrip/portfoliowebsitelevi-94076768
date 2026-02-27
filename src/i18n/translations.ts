@@ -8,7 +8,7 @@ interface TranslationStrings {
     enchanted: { title: string; description: string };
     pixel: { title: string; description: string };
   };
-  form: { addTitle: string; editTitle: string; imageLabel: string; uploadImage: string; maxSize: string; imageRequired: string; imageFileError: string; imageSizeError: string; titleLabel: string; titlePlaceholder: string; descriptionLabel: string; descriptionPlaceholder: string; categoryLabel: string; categoryPlaceholder: string; linkLabel: string; saveChanges: string; addGameBtn: string };
+  form: { addTitle: string; editTitle: string; imageLabel: string; uploadImage: string; maxSize: string; imageRequired: string; imageFileError: string; imageSizeError: string; titleLabel: string; titlePlaceholder: string; descriptionLabel: string; descriptionPlaceholder: string; categoryLabel: string; categoryPlaceholder: string; newCategory: string; newCategoryPlaceholder: string; linkLabel: string; saveChanges: string; addGameBtn: string };
   detail: { notFoundTitle: string; notFoundDesc: string; back: string; backToPortfolio: string; playNow: string; viewProject: string; gameDetails: string; category: string; status: string; available: string };
   footer: { brand: string; copyright: string };
   admin: { title: string; placeholder: string; login: string; cancel: string; checking: string; incorrect: string };
@@ -59,6 +59,8 @@ export const translations: Record<Language, TranslationStrings> = {
       descriptionPlaceholder: "Describe your game...",
       categoryLabel: "Category *",
       categoryPlaceholder: "Select a category",
+      newCategory: "+ New Category",
+      newCategoryPlaceholder: "Enter category name",
       linkLabel: "Game Link (Optional)",
       saveChanges: "Save Changes",
       addGameBtn: "Add Game",
@@ -137,6 +139,8 @@ export const translations: Record<Language, TranslationStrings> = {
       descriptionPlaceholder: "Beschrijf je game...",
       categoryLabel: "Categorie *",
       categoryPlaceholder: "Selecteer een categorie",
+      newCategory: "+ Nieuwe Categorie",
+      newCategoryPlaceholder: "Voer categorienaam in",
       linkLabel: "Game Link (Optioneel)",
       saveChanges: "Wijzigingen Opslaan",
       addGameBtn: "Game Toevoegen",
